@@ -206,6 +206,9 @@ body.ly #ly{display:flex}
 #tip>div{flex:1;display:flex;flex-direction:column;gap:2px}
 #tip span{font-size:14px;color:var(--dim)}
 #tip button{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.12)}
+.fpfoot button[hidden]{display:none}
+.fpfoot .lit{color:#ffe94d}
+#airbtn.lit{color:var(--mint)}
 </style>
 </head>
 <body>
@@ -247,7 +250,7 @@ body.ly #ly{display:flex}
     </div>
     <div class="bar"><span id="cur">0:00</span><input type="range" id="seek" min="0" max="1000" value="0" aria-label="Seek"><span id="dur">0:00</span></div>
   </div>
-  <div class="vol">Vol <input type="range" id="vol" min="0" max="100" value="80" aria-label="Volume"></div>
+  <div class="vol"><button class="act" id="airbtn" hidden>AirPlay</button>Vol <input type="range" id="vol" min="0" max="100" value="80" aria-label="Volume"></div>
 </footer>
 <section id="fp" aria-label="Now playing">
   <div class="fptop">
@@ -267,7 +270,7 @@ body.ly #ly{display:flex}
   </div>
   <div class="fpfoot">
     <button id="fpl" aria-label="Lyrinc lyrics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM9 9v2M14 9v2"/></svg></button>
-    <button disabled aria-label="Devices (not available)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="13" y="6" width="8" height="14" rx="2"/><circle cx="17" cy="14.5" r="2"/><path d="M10 4H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h5"/></svg></button>
+    <button id="fpdev" aria-label="AirPlay" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-1"/><path d="m12 14.5 5 6H7z" fill="currentColor"/></svg></button>
     <button id="fpq" aria-label="Back to song list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h14M5 11h14M7 16h10M9 20.5h6"/></svg></button>
   </div>
 </section>
@@ -744,6 +747,14 @@ function pwaInit(){
     if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
     if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
   }catch(e){}
+}
+
+/* AirPlay: Safari on iPhone, iPad and Mac */
+if('webkitShowPlaybackTargetPicker' in au){
+  const airs=[$('#fpdev'),$('#airbtn')];
+  airs.forEach(b=>{b.hidden=false;b.onclick=()=>{try{au.webkitShowPlaybackTargetPicker()}catch(e){}}});
+  au.addEventListener('webkitplaybacktargetavailabilitychanged',e=>airs.forEach(b=>{b.style.opacity=e.availability==='available'?'':'.4'}));
+  au.addEventListener('webkitcurrentplaybacktargetiswirelesschanged',()=>airs.forEach(b=>b.classList.toggle('lit',!!au.webkitCurrentPlaybackTargetIsWireless)));
 }
 
 /* Install button: native prompt on Android and desktop Chrome/Edge, short guide on iPhone */
