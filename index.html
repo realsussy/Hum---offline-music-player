@@ -327,6 +327,8 @@ body.home h1{font:700 44px/1.05 ui-rounded,"SF Pro Rounded",-apple-system,system
 .bcard{position:relative;overflow:hidden;height:92px;border-radius:16px;text-align:left;padding:12px;background:linear-gradient(135deg,hsl(var(--th) 65% 48%),hsl(calc(var(--th) + 40) 60% 38%));box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
 .bcard b{position:relative;z-index:1;font-size:17px;display:block;max-width:70%}
 .bcard .lart{position:absolute;right:-10px;bottom:-8px;width:62px;height:62px;transform:rotate(22deg);border-radius:8px;box-shadow:0 6px 14px rgba(0,0,0,.35)}
+select.langsel{width:100%;color:#fff;font:inherit;text-align:center;text-align-last:center;-webkit-appearance:none;appearance:none}
+select.langsel option{color:#111}
 </style>
 </head>
 <body>
@@ -352,11 +354,12 @@ body.home h1{font:700 44px/1.05 ui-rounded,"SF Pro Rounded",-apple-system,system
   <button class="act" id="howup">How to update</button>
   <button class="act inst" id="inst" hidden>Install Hum</button>
   <button class="act" id="snd"></button>
+  <select class="act langsel" aria-label="Language"></select>
   <div class="sec" id="who"></div>
   <button class="act" id="logout">Log out</button>
 </aside>
 <main>
-  <div class="top"><button class="avatar" id="avatar" aria-label="Open settings"></button><button class="hb" id="back" aria-label="Back to library">‹</button><h1 id="title">All songs</h1><button class="hb" id="libadd" aria-label="Add to library">+</button><button class="hb" id="plmore" aria-label="Playlist options">⋯</button><button class="chip" id="menu-btn" aria-label="Library and playlists">☰</button><input id="search" type="search" placeholder="Search songs"></div>
+  <div class="top"><button class="avatar" id="avatar" aria-label="Open settings"></button><button class="hb" id="back" aria-label="Back to library">‹</button><h1 id="title"></h1><button class="hb" id="libadd" aria-label="Add to library">+</button><button class="hb" id="plmore" aria-label="Playlist options">⋯</button><button class="chip" id="menu-btn" aria-label="Library and playlists">☰</button><input id="search" type="search" placeholder="Search songs"></div>
   <div id="list"></div>
 </main>
 <section class="disc"><button class="chev" id="closenp" aria-label="Close now playing">⌄</button>
@@ -376,7 +379,7 @@ body.home h1{font:700 44px/1.05 ui-rounded,"SF Pro Rounded",-apple-system,system
     </div>
     <div class="bar"><span id="cur">0:00</span><input type="range" id="seek" min="0" max="1000" value="0" aria-label="Seek"><span id="dur">0:00</span></div>
   </div>
-  <div class="vol"><button class="act" id="airbtn" hidden>AirPlay</button>Vol <input type="range" id="vol" min="0" max="100" value="80" aria-label="Volume"></div>
+  <div class="vol"><button class="act" id="airbtn" hidden>AirPlay</button><span>Vol</span> <input type="range" id="vol" min="0" max="100" value="80" aria-label="Volume"></div>
 </footer>
 <section id="fp" aria-label="Now playing">
   <div class="fptop">
@@ -413,6 +416,7 @@ body.home h1{font:700 44px/1.05 ui-rounded,"SF Pro Rounded",-apple-system,system
     <button id="aguest" class="act" type="button">Continue as guest</button>
     <button class="act inst" type="button" hidden>Install Hum</button>
     <p class="anote">Accounts are stored on this device only. They keep each person's library and playlists separate, but they don't lock anyone out of the device.</p>
+    <select class="act langsel" aria-label="Language"></select>
   </form>
 </div>
 <section id="ly" aria-label="Lyrinc lyrics">
@@ -465,9 +469,9 @@ body.home h1{font:700 44px/1.05 ui-rounded,"SF Pro Rounded",-apple-system,system
       </div>
       <div class="hbar"></div>
     </div></div>
-    <div class="gt on" data-s="1"><small>Step 1 of 3</small><p><b>Uninstall the app.</b> If you want to keep your songs, back them up first.</p><em>Uninstalling also erases playlists and accounts saved inside Hum.</em></div>
-    <div class="gt" data-s="2"><small>Step 2 of 3</small><p>Go to <a href="https://github.com/realsussy/Hum---offline-music-player" target="_blank" rel="noopener">github.com/realsussy/Hum---offline-music-player</a> and redownload Hum.</p></div>
-    <div class="gt" data-s="3"><small>Step 3 of 3</small><p><b>Reimport your songs!</b></p><em>Tap Add songs and pick them from Files.</em></div>
+    <div class="gt on" data-s="1"><small data-i="step_of" data-va="1">Step 1 of 3</small><p data-ih="g1"><b>Uninstall the app.</b> If you want to keep your songs, back them up first.</p><em>Uninstalling also erases playlists and accounts saved inside Hum.</em></div>
+    <div class="gt" data-s="2"><small data-i="step_of" data-va="2">Step 2 of 3</small><p data-ih="g2">Go to <a href="https://github.com/realsussy/Hum---offline-music-player" target="_blank" rel="noopener">github.com/realsussy/Hum---offline-music-player</a> and redownload Hum.</p></div>
+    <div class="gt" data-s="3"><small data-i="step_of" data-va="3">Step 3 of 3</small><p data-ih="g3"><b>Reimport your songs!</b></p><em>Tap Add songs and pick them from Files.</em></div>
     <div class="gdots"><i class="on"></i><i></i><i></i></div>
     <div class="gbtns"><button class="act" id="gback" hidden>Back</button><button class="apri" id="gnext">Next</button></div>
   </div>
@@ -482,7 +486,180 @@ body.home h1{font:700 44px/1.05 ui-rounded,"SF Pro Rounded",-apple-system,system
 const $=s=>document.querySelector(s), au=$('#au');
 const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 let tracks=[],durs={},pls=[],view='all',queue=[],cur=null,shuffle=false,repeat=0,q='',blobUrl=null;
-let likes=[],recent=[],libF='all',libNew=false,backTo='lib',userName='Guest';
+/* languages: English, Greek, Spanish, French, German, Italian, Portuguese, Turkish, Russian, Japanese */
+const LANGS=[["en","English"],["el","Ελληνικά"],["es","Español"],["fr","Français"],["de","Deutsch"],["it","Italiano"],["pt","Português"],["tr","Türkçe"],["ru","Русский"],["ja","日本語"]];
+const D={
+all:["All songs","Όλα τα τραγούδια","Todas las canciones","Tous les titres","Alle Songs","Tutti i brani","Todas as músicas","Tüm şarkılar","Все песни","すべての曲"],
+liked:["Liked songs","Αγαπημένα τραγούδια","Canciones que te gustan","Titres likés","Gefällt mir","Brani che ti piacciono","Músicas curtidas","Beğenilen şarkılar","Любимые песни","お気に入りの曲"],
+recent:["Recently played","Παίχτηκαν πρόσφατα","Reproducido recientemente","Écoutés récemment","Zuletzt gehört","Ascoltati di recente","Tocadas recentemente","Son çalınanlar","Недавно прослушанные","最近再生した曲"],
+home:["Home","Αρχική","Inicio","Accueil","Start","Home","Início","Ana sayfa","Главная","ホーム"],
+search:["Search","Αναζήτηση","Buscar","Rechercher","Suchen","Cerca","Buscar","Ara","Поиск","検索"],
+playlists:["Playlists","Λίστες αναπαραγωγής","Listas","Playlists","Playlists","Playlist","Playlists","Çalma listeleri","Плейлисты","プレイリスト"],
+lib:["Your Library","Η βιβλιοθήκη σου","Tu biblioteca","Ta bibliothèque","Deine Bibliothek","La tua libreria","Sua biblioteca","Kitaplığın","Твоя медиатека","ライブラリ"],
+chip_all:["All","Όλα","Todo","Tout","Alle","Tutto","Tudo","Tümü","Все","すべて"],
+settings:["Settings","Ρυθμίσεις","Ajustes","Réglages","Einstellungen","Impostazioni","Ajustes","Ayarlar","Настройки","設定"],
+ph_search:["Search songs","Αναζήτηση τραγουδιών","Buscar canciones","Rechercher des titres","Songs suchen","Cerca brani","Buscar músicas","Şarkı ara","Поиск песен","曲を検索"],
+ph_newpl:["New playlist, press Enter","Νέα λίστα, πάτα Enter","Nueva lista, pulsa Intro","Nouvelle playlist, appuie sur Entrée","Neue Playlist, Enter drücken","Nuova playlist, premi Invio","Nova playlist, pressione Enter","Yeni liste, Enter'a bas","Новый плейлист, нажми Enter","新しいプレイリスト（Enterで作成）"],
+add_music:["Add music","Προσθήκη μουσικής","Añadir música","Ajouter de la musique","Musik hinzufügen","Aggiungi musica","Adicionar música","Müzik ekle","Добавить музыку","音楽を追加"],
+add_songs:["Add songs","Προσθήκη τραγουδιών","Añadir canciones","Ajouter des titres","Songs hinzufügen","Aggiungi brani","Adicionar músicas","Şarkı ekle","Добавить песни","曲を追加"],
+add_folder:["Add folder","Προσθήκη φακέλου","Añadir carpeta","Ajouter un dossier","Ordner hinzufügen","Aggiungi cartella","Adicionar pasta","Klasör ekle","Добавить папку","フォルダを追加"],
+auto:["Auto-load a folder","Αυτόματη φόρτωση φακέλου","Cargar una carpeta automáticamente","Charger un dossier automatiquement","Ordner automatisch laden","Carica una cartella automaticamente","Carregar uma pasta automaticamente","Klasörü otomatik yükle","Автозагрузка папки","フォルダを自動で読み込む"],
+how_update:["How to update","Πώς να ενημερώσεις","Cómo actualizar","Comment mettre à jour","So aktualisierst du","Come aggiornare","Como atualizar","Nasıl güncellenir","Как обновить","アップデート方法"],
+install:["Install Hum","Εγκατάσταση του Hum","Instalar Hum","Installer Hum","Hum installieren","Installa Hum","Instalar o Hum","Hum'u yükle","Установить Hum","Humをインストール"],
+sounds:["Click sounds","Ήχοι κλικ","Sonidos de clic","Sons de clic","Klickgeräusche","Suoni dei tocchi","Sons de toque","Dokunma sesleri","Звуки нажатий","タップ音"],
+on:["on","ενεργοί","activados","activés","an","attivi","ativados","açık","вкл.","オン"],
+off:["off","ανενεργοί","desactivados","désactivés","aus","disattivati","desativados","kapalı","выкл.","オフ"],
+signed:["Signed in as {n}","Συνδεδεμένος ως {n}","Sesión iniciada como {n}","Connecté en tant que {n}","Angemeldet als {n}","Accesso come {n}","Conectado como {n}","{n} olarak giriş yapıldı","Вы вошли как {n}","{n} としてログイン中"],
+guest_sess:["Guest session","Συνεδρία επισκέπτη","Sesión de invitado","Session invité","Gastsitzung","Sessione ospite","Sessão de convidado","Misafir oturumu","Гостевой сеанс","ゲストセッション"],
+logout:["Log out","Αποσύνδεση","Cerrar sesión","Se déconnecter","Abmelden","Esci","Sair","Çıkış yap","Выйти","ログアウト"],
+or:["or","ή","o","ou","oder","oppure","ou","veya","или","または"],
+log_in:["Log in","Σύνδεση","Iniciar sesión","Se connecter","Anmelden","Accedi","Entrar","Giriş yap","Войти","ログイン"],
+sign_up:["Sign up","Εγγραφή","Registrarse","S'inscrire","Registrieren","Registrati","Cadastrar","Kayıt ol","Регистрация","新規登録"],
+ph_name:["Your name","Το όνομά σου","Tu nombre","Ton nom","Dein Name","Il tuo nome","Seu nome","Adın","Твоё имя","お名前"],
+ph_user:["Username","Όνομα χρήστη","Usuario","Nom d'utilisateur","Benutzername","Nome utente","Nome de usuário","Kullanıcı adı","Имя пользователя","ユーザー名"],
+ph_pass:["Password","Κωδικός","Contraseña","Mot de passe","Passwort","Password","Senha","Şifre","Пароль","パスワード"],
+create_acc:["Create account","Δημιουργία λογαριασμού","Crear cuenta","Créer un compte","Konto erstellen","Crea account","Criar conta","Hesap oluştur","Создать аккаунт","アカウントを作成"],
+guest:["Continue as guest","Συνέχεια ως επισκέπτης","Continuar como invitado","Continuer en invité","Als Gast fortfahren","Continua come ospite","Continuar como convidado","Misafir olarak devam et","Продолжить как гость","ゲストとして続ける"],
+anote:["Accounts are stored on this device only. They keep each person's library and playlists separate, but they don't lock anyone out of the device.","Οι λογαριασμοί αποθηκεύονται μόνο σε αυτή τη συσκευή. Κρατούν χωριστές τις βιβλιοθήκες και τις λίστες του καθενός, αλλά δεν κλειδώνουν τη συσκευή.","Las cuentas se guardan solo en este dispositivo. Mantienen separadas la biblioteca y las listas de cada persona, pero no bloquean el acceso al dispositivo.","Les comptes sont stockés uniquement sur cet appareil. Ils séparent la bibliothèque et les playlists de chacun, mais ne verrouillent pas l'appareil.","Konten werden nur auf diesem Gerät gespeichert. Sie trennen Bibliothek und Playlists jeder Person, sperren aber niemanden vom Gerät aus.","Gli account sono salvati solo su questo dispositivo. Tengono separate libreria e playlist di ciascuno, ma non bloccano l'accesso al dispositivo.","As contas ficam salvas apenas neste dispositivo. Elas mantêm a biblioteca e as playlists de cada pessoa separadas, mas não bloqueiam o acesso ao aparelho.","Hesaplar yalnızca bu cihazda saklanır. Herkesin kitaplığını ve listelerini ayrı tutar, ancak cihaza erişimi engellemez.","Аккаунты хранятся только на этом устройстве. Они разделяют медиатеку и плейлисты, но не блокируют доступ к устройству.","アカウントはこのデバイスにのみ保存されます。ライブラリとプレイリストを分けて管理しますが、デバイス自体のロックにはなりません。"],
+e_name:["Enter your name.","Γράψε το όνομά σου.","Escribe tu nombre.","Saisis ton nom.","Gib deinen Namen ein.","Inserisci il tuo nome.","Digite seu nome.","Adını gir.","Введи своё имя.","お名前を入力してください。"],
+e_user:["Username: 3 to 20 letters, numbers, . _ or -","Όνομα χρήστη: 3 έως 20 γράμματα, αριθμοί, . _ ή -","Usuario: de 3 a 20 letras, números, . _ o -","Nom d'utilisateur : 3 à 20 lettres, chiffres, . _ ou -","Benutzername: 3 bis 20 Buchstaben, Zahlen, . _ oder -","Nome utente: da 3 a 20 lettere, numeri, . _ o -","Usuário: de 3 a 20 letras, números, . _ ou -","Kullanıcı adı: 3-20 harf, rakam, . _ veya -","Имя: от 3 до 20 латинских букв, цифр, . _ или -","ユーザー名：英数字と . _ - を使って3〜20文字"],
+e_pass:["Password needs at least 8 characters.","Ο κωδικός θέλει τουλάχιστον 8 χαρακτήρες.","La contraseña necesita al menos 8 caracteres.","Le mot de passe doit contenir au moins 8 caractères.","Das Passwort braucht mindestens 8 Zeichen.","La password deve avere almeno 8 caratteri.","A senha precisa ter pelo menos 8 caracteres.","Şifre en az 8 karakter olmalı.","Пароль должен быть не короче 8 символов.","パスワードは8文字以上にしてください。"],
+e_taken:["That username is taken.","Αυτό το όνομα χρήστη χρησιμοποιείται ήδη.","Ese usuario ya existe.","Ce nom d'utilisateur est déjà pris.","Dieser Benutzername ist vergeben.","Questo nome utente è già in uso.","Esse nome de usuário já está em uso.","Bu kullanıcı adı alınmış.","Это имя уже занято.","そのユーザー名は使われています。"],
+e_wrong:["Wrong username or password.","Λάθος όνομα χρήστη ή κωδικός.","Usuario o contraseña incorrectos.","Nom d'utilisateur ou mot de passe incorrect.","Benutzername oder Passwort falsch.","Nome utente o password errati.","Usuário ou senha incorretos.","Kullanıcı adı veya şifre yanlış.","Неверное имя или пароль.","ユーザー名またはパスワードが違います。"],
+e_secure:["Secure sign-in is not available here.","Η ασφαλής σύνδεση δεν είναι διαθέσιμη εδώ.","El inicio de sesión seguro no está disponible aquí.","La connexion sécurisée n'est pas disponible ici.","Sichere Anmeldung ist hier nicht verfügbar.","L'accesso sicuro non è disponibile qui.","O login seguro não está disponível aqui.","Güvenli giriş burada kullanılamıyor.","Безопасный вход здесь недоступен.","ここでは安全なログインを利用できません。"],
+e_fail:["Something went wrong. Try again.","Κάτι πήγε στραβά. Δοκίμασε ξανά.","Algo salió mal. Inténtalo de nuevo.","Un problème est survenu. Réessaie.","Etwas ist schiefgelaufen. Versuch es erneut.","Qualcosa è andato storto. Riprova.","Algo deu errado. Tente novamente.","Bir sorun oluştu. Tekrar dene.","Что-то пошло не так. Попробуй ещё раз.","問題が発生しました。もう一度お試しください。"],
+e_google:["Google sign-in failed. Try again.","Η σύνδεση με Google απέτυχε. Δοκίμασε ξανά.","Falló el inicio de sesión con Google. Inténtalo de nuevo.","La connexion avec Google a échoué. Réessaie.","Google-Anmeldung fehlgeschlagen. Versuch es erneut.","Accesso con Google non riuscito. Riprova.","Falha no login com Google. Tente novamente.","Google ile giriş başarısız. Tekrar dene.","Не удалось войти через Google. Попробуй ещё раз.","Googleログインに失敗しました。もう一度お試しください。"],
+welcome:["Welcome to Hum","Καλώς ήρθες στο Hum","Te damos la bienvenida a Hum","Bienvenue sur Hum","Willkommen bei Hum","Benvenuto su Hum","Boas-vindas ao Hum","Hum'a hoş geldin","Добро пожаловать в Hum","Humへようこそ"],
+welcome_sub:["Add some music to get started.","Πρόσθεσε μουσική για να ξεκινήσεις.","Añade música para empezar.","Ajoute de la musique pour commencer.","Füge Musik hinzu, um loszulegen.","Aggiungi della musica per iniziare.","Adicione músicas para começar.","Başlamak için müzik ekle.","Добавь музыку, чтобы начать.","音楽を追加して始めましょう。"],
+suggested:["Suggested for today","Προτεινόμενα για σήμερα","Sugerencias para hoy","Suggestions du jour","Heute für dich","Consigliati per oggi","Sugestões para hoje","Bugün için öneriler","Рекомендуем сегодня","今日のおすすめ"],
+recents:["Recents","Πρόσφατα","Recientes","Récents","Zuletzt","Recenti","Recentes","Son oynatılanlar","Недавние","最近"],
+show_all:["Show all","Εμφάνιση όλων","Ver todo","Tout afficher","Alle anzeigen","Mostra tutto","Ver tudo","Tümünü göster","Показать все","すべて表示"],
+song:["Song","Τραγούδι","Canción","Titre","Song","Brano","Música","Şarkı","Песня","曲"],
+local:["Local file","Τοπικό αρχείο","Archivo local","Fichier local","Lokale Datei","File locale","Arquivo local","Yerel dosya","Локальный файл","ローカルファイル"],
+browse:["Browse your library","Περιήγηση στη βιβλιοθήκη σου","Explora tu biblioteca","Parcourir ta bibliothèque","Stöbere in deiner Bibliothek","Sfoglia la tua libreria","Explore sua biblioteca","Kitaplığına göz at","Обзор медиатеки","ライブラリを見る"],
+no_results:["No results","Κανένα αποτέλεσμα","Sin resultados","Aucun résultat","Keine Ergebnisse","Nessun risultato","Nenhum resultado","Sonuç yok","Ничего не найдено","結果なし"],
+try_other:["Try a different word.","Δοκίμασε άλλη λέξη.","Prueba con otra palabra.","Essaie un autre mot.","Versuch ein anderes Wort.","Prova con un'altra parola.","Tente outra palavra.","Başka bir kelime dene.","Попробуй другое слово.","別の言葉で試してください。"],
+songs_h:["Songs","Τραγούδια","Canciones","Titres","Songs","Brani","Músicas","Şarkılar","Песни","曲"],
+pl_sub:["Playlist · {n} song|Playlist · {n} songs","Λίστα · {n} τραγούδι|Λίστα · {n} τραγούδια","Lista · {n} canción|Lista · {n} canciones","Playlist · {n} titre|Playlist · {n} titres","Playlist · {n} Song|Playlist · {n} Songs","Playlist · {n} brano|Playlist · {n} brani","Playlist · {n} música|Playlist · {n} músicas","Liste · {n} şarkı","Плейлист · {n} песня|Плейлист · {n} песни|Плейлист · {n} песен","プレイリスト · {n}曲"],
+no_match:["No songs match your search","Κανένα τραγούδι δεν ταιριάζει","Ninguna canción coincide","Aucun titre ne correspond","Keine passenden Songs","Nessun brano corrisponde","Nenhuma música encontrada","Aramanla eşleşen şarkı yok","Ничего не подходит","一致する曲がありません"],
+no_liked:["No liked songs yet","Κανένα αγαπημένο ακόμα","Aún no tienes favoritas","Aucun titre liké pour l'instant","Noch keine Lieblingssongs","Nessun brano preferito","Nenhuma curtida ainda","Henüz beğenilen şarkı yok","Пока нет любимых песен","お気に入りの曲はまだありません"],
+no_liked_sub:["Tap the heart in the player to like a song.","Πάτα την καρδιά στον player για να αγαπήσεις ένα τραγούδι.","Toca el corazón en el reproductor para marcar una canción.","Touche le cœur dans le lecteur pour liker un titre.","Tippe im Player auf das Herz, um einen Song zu liken.","Tocca il cuore nel player per aggiungere un brano ai preferiti.","Toque no coração no player para curtir uma música.","Bir şarkıyı beğenmek için oynatıcıdaki kalbe dokun.","Нажми на сердечко в плеере, чтобы отметить песню.","プレーヤーのハートをタップすると曲をお気に入りに追加できます。"],
+nothing_played:["Nothing played yet","Δεν έχει παιχτεί τίποτα ακόμα","Aún no has reproducido nada","Rien n'a encore été écouté","Noch nichts gespielt","Ancora nulla in riproduzione","Nada tocado ainda","Henüz bir şey çalınmadı","Пока ничего не играло","まだ再生した曲はありません"],
+nothing_played_sub:["Songs you play show up here.","Τα τραγούδια που παίζεις εμφανίζονται εδώ.","Las canciones que reproduzcas aparecerán aquí.","Les titres que tu écoutes apparaissent ici.","Hier erscheinen die Songs, die du abspielst.","I brani che ascolti compaiono qui.","As músicas que você tocar aparecem aqui.","Çaldığın şarkılar burada görünür.","Здесь появятся песни, которые ты слушаешь.","再生した曲がここに表示されます。"],
+pl_empty:["This playlist is empty","Αυτή η λίστα είναι άδεια","Esta lista está vacía","Cette playlist est vide","Diese Playlist ist leer","Questa playlist è vuota","Esta playlist está vazia","Bu liste boş","Этот плейлист пуст","このプレイリストは空です"],
+pl_empty_sub:["Use the + button on a song to add it here.","Χρησιμοποίησε το κουμπί + σε ένα τραγούδι για να το προσθέσεις εδώ.","Usa el botón + de una canción para añadirla aquí.","Utilise le bouton + d'un titre pour l'ajouter ici.","Nutze das + bei einem Song, um ihn hier hinzuzufügen.","Usa il pulsante + su un brano per aggiungerlo qui.","Use o botão + em uma música para adicioná-la aqui.","Eklemek için bir şarkıdaki + düğmesini kullan.","Нажми + у песни, чтобы добавить её сюда.","曲の＋ボタンでここに追加できます。"],
+lib_empty:["Your library is empty","Η βιβλιοθήκη σου είναι άδεια","Tu biblioteca está vacía","Ta bibliothèque est vide","Deine Bibliothek ist leer","La tua libreria è vuota","Sua biblioteca está vazia","Kitaplığın boş","Твоя медиатека пуста","ライブラリは空です"],
+lib_empty_sub:["Drop music files here, or add them below.","Σύρε αρχεία μουσικής εδώ ή πρόσθεσέ τα παρακάτω.","Suelta archivos de música aquí o añádelos abajo.","Dépose des fichiers musicaux ici ou ajoute-les ci-dessous.","Zieh Musikdateien hierher oder füge sie unten hinzu.","Trascina qui i file musicali o aggiungili sotto.","Solte arquivos de música aqui ou adicione abaixo.","Müzik dosyalarını buraya bırak veya aşağıdan ekle.","Перетащи сюда файлы или добавь их ниже.","音楽ファイルをここにドロップするか、下から追加してください。"],
+new_pl:["New playlist","Νέα λίστα","Nueva lista","Nouvelle playlist","Neue Playlist","Nuova playlist","Nova playlist","Yeni liste","Новый плейлист","新しいプレイリスト"],
+ph_plname:["Playlist name","Όνομα λίστας","Nombre de la lista","Nom de la playlist","Playlist-Name","Nome della playlist","Nome da playlist","Liste adı","Название плейлиста","プレイリスト名"],
+create:["Create","Δημιουργία","Crear","Créer","Erstellen","Crea","Criar","Oluştur","Создать","作成"],
+del_pl:["Delete playlist","Διαγραφή λίστας","Eliminar lista","Supprimer la playlist","Playlist löschen","Elimina playlist","Excluir playlist","Listeyi sil","Удалить плейлист","プレイリストを削除"],
+del_yes:["Yes, delete “{n}”","Ναι, διαγραφή «{n}»","Sí, eliminar «{n}»","Oui, supprimer « {n} »","Ja, „{n}“ löschen","Sì, elimina «{n}»","Sim, excluir “{n}”","Evet, “{n}” silinsin","Да, удалить «{n}»","はい、「{n}」を削除"],
+cancel:["Cancel","Ακύρωση","Cancelar","Annuler","Abbrechen","Annulla","Cancelar","İptal","Отмена","キャンセル"],
+like:["Like song","Αγαπημένο","Me gusta","Liker le titre","Song liken","Mi piace","Curtir música","Şarkıyı beğen","Нравится","お気に入りに追加"],
+unlike:["Unlike song","Αφαίρεση από αγαπημένα","Quitar me gusta","Retirer le like","Like entfernen","Rimuovi Mi piace","Descurtir música","Beğenmeyi kaldır","Убрать из любимых","お気に入りから削除"],
+add_to:["Add to {n}","Προσθήκη στη «{n}»","Añadir a {n}","Ajouter à {n}","Zu {n} hinzufügen","Aggiungi a {n}","Adicionar a {n}","{n} listesine ekle","Добавить в «{n}»","{n} に追加"],
+make_pl:["Make a playlist first","Φτιάξε πρώτα μια λίστα","Crea primero una lista","Crée d'abord une playlist","Erstelle zuerst eine Playlist","Crea prima una playlist","Crie uma playlist primeiro","Önce bir liste oluştur","Сначала создай плейлист","先にプレイリストを作成してください"],
+rm_pl:["Remove from this playlist","Αφαίρεση από αυτή τη λίστα","Quitar de esta lista","Retirer de cette playlist","Aus dieser Playlist entfernen","Rimuovi da questa playlist","Remover desta playlist","Bu listeden kaldır","Убрать из плейлиста","このプレイリストから削除"],
+rm_lib:["Remove from library","Αφαίρεση από τη βιβλιοθήκη","Quitar de la biblioteca","Retirer de la bibliothèque","Aus Bibliothek entfernen","Rimuovi dalla libreria","Remover da biblioteca","Kitaplıktan kaldır","Удалить из медиатеки","ライブラリから削除"],
+nothing_playing:["Nothing playing","Δεν παίζει τίποτα","Nada en reproducción","Aucune lecture","Nichts wird abgespielt","Nessuna riproduzione","Nada tocando","Çalan bir şey yok","Ничего не играет","再生していません"],
+pick_song:["Pick a song","Διάλεξε τραγούδι","Elige una canción","Choisis un titre","Wähle einen Song","Scegli un brano","Escolha uma música","Bir şarkı seç","Выбери песню","曲を選択"],
+pick_start:["Pick a song to start","Διάλεξε τραγούδι για να ξεκινήσεις","Elige una canción para empezar","Choisis un titre pour commencer","Wähle einen Song zum Starten","Scegli un brano per iniziare","Escolha uma música para começar","Başlamak için bir şarkı seç","Выбери песню, чтобы начать","曲を選んで再生"],
+now_playing:["Now playing","Παίζει τώρα","Reproduciendo","En cours de lecture","Läuft gerade","In riproduzione","Tocando agora","Şimdi çalıyor","Сейчас играет","再生中"],
+vol:["Vol","Ένταση","Vol.","Vol.","Lautst.","Vol.","Vol.","Ses","Гром.","音量"],
+drop:["Drop songs to add them","Άφησε τραγούδια για προσθήκη","Suelta canciones para añadirlas","Dépose des titres pour les ajouter","Songs hier ablegen zum Hinzufügen","Rilascia i brani per aggiungerli","Solte músicas para adicioná-las","Eklemek için şarkıları bırak","Перетащи песни, чтобы добавить","曲をドロップして追加"],
+ly_find:["Finding lyrics…","Αναζήτηση στίχων…","Buscando letra…","Recherche des paroles…","Suche Songtext…","Cerco il testo…","Procurando a letra…","Sözler aranıyor…","Ищем текст…","歌詞を検索中…"],
+ly_none:["No lyrics found for this song. Try another spelling.","Δεν βρέθηκαν στίχοι. Δοκίμασε άλλη γραφή.","No se encontró la letra. Prueba otra ortografía.","Aucune parole trouvée. Essaie une autre orthographe.","Kein Songtext gefunden. Versuch eine andere Schreibweise.","Nessun testo trovato. Prova un'altra grafia.","Letra não encontrada. Tente outra grafia.","Söz bulunamadı. Başka bir yazım dene.","Текст не найден. Попробуй другое написание.","歌詞が見つかりません。別の表記をお試しください。"],
+ly_net:["Could not reach the lyrics service. Check your internet and try again.","Δεν ήταν δυνατή η σύνδεση με την υπηρεσία στίχων. Έλεγξε το internet και δοκίμασε ξανά.","No se pudo conectar con el servicio de letras. Revisa tu internet e inténtalo de nuevo.","Impossible de joindre le service de paroles. Vérifie ta connexion et réessaie.","Der Songtext-Dienst ist nicht erreichbar. Prüf dein Internet und versuch es erneut.","Impossibile raggiungere il servizio dei testi. Controlla internet e riprova.","Não foi possível acessar o serviço de letras. Verifique sua internet e tente de novo.","Söz servisine ulaşılamadı. İnternetini kontrol edip tekrar dene.","Не удалось связаться с сервисом текстов. Проверь интернет и попробуй снова.","歌詞サービスに接続できません。ネット接続を確認してもう一度お試しください。"],
+ly_net2:["Could not reach the lyrics service.","Δεν ήταν δυνατή η σύνδεση με την υπηρεσία στίχων.","No se pudo conectar con el servicio de letras.","Impossible de joindre le service de paroles.","Der Songtext-Dienst ist nicht erreichbar.","Impossibile raggiungere il servizio dei testi.","Não foi possível acessar o serviço de letras.","Söz servisine ulaşılamadı.","Не удалось связаться с сервисом текстов.","歌詞サービスに接続できません。"],
+ly_inst:["♪ Instrumental","♪ Instrumental","♪ Instrumental","♪ Instrumental","♪ Instrumental","♪ Strumentale","♪ Instrumental","♪ Enstrümantal","♪ Инструментал","♪ インストゥルメンタル"],
+ly_first:["Play a song, then open Lyrinc.","Παίξε ένα τραγούδι και άνοιξε το Lyrinc.","Reproduce una canción y abre Lyrinc.","Lance un titre, puis ouvre Lyrinc.","Spiel einen Song ab und öffne Lyrinc.","Riproduci un brano e apri Lyrinc.","Toque uma música e abra o Lyrinc.","Bir şarkı çal, sonra Lyrinc'i aç.","Включи песню и открой Lyrinc.","曲を再生してからLyrincを開いてください。"],
+ly_unknown:["Unknown artist","Άγνωστος καλλιτέχνης","Artista desconocido","Artiste inconnu","Unbekannter Künstler","Artista sconosciuto","Artista desconhecido","Bilinmeyen sanatçı","Неизвестный исполнитель","不明なアーティスト"],
+ph_title:["Song title","Τίτλος τραγουδιού","Título de la canción","Titre du morceau","Songtitel","Titolo del brano","Título da música","Şarkı adı","Название песни","曲名"],
+ph_artist:["Artist","Καλλιτέχνης","Artista","Artiste","Künstler","Artista","Artista","Sanatçı","Исполнитель","アーティスト"],
+searching:["Searching…","Αναζήτηση…","Buscando…","Recherche…","Suche läuft…","Ricerca…","Pesquisando…","Aranıyor…","Поиск…","検索中…"],
+no_matches:["No matches yet.","Κανένα αποτέλεσμα ακόμα.","Aún no hay coincidencias.","Aucune correspondance pour l'instant.","Noch keine Treffer.","Ancora nessuna corrispondenza.","Nenhuma correspondência ainda.","Henüz eşleşme yok.","Пока нет совпадений.","まだ一致する結果はありません。"],
+dl_lrc:["Download .lrc (synced)","Λήψη .lrc (συγχρονισμένο)","Descargar .lrc (sincronizada)","Télécharger .lrc (synchronisé)",".lrc laden (synchron)","Scarica .lrc (sincronizzato)","Baixar .lrc (sincronizada)",".lrc indir (senkronize)","Скачать .lrc (синхронно)",".lrc をダウンロード（同期）"],
+dl_txt:["Download .txt (plain)","Λήψη .txt (απλό)","Descargar .txt (texto)","Télécharger .txt (texte)",".txt laden (Text)","Scarica .txt (testo)","Baixar .txt (texto)",".txt indir (düz metin)","Скачать .txt (текст)",".txt をダウンロード（テキスト）"],
+imp:["Import a lyrics file","Εισαγωγή αρχείου στίχων","Importar archivo de letra","Importer un fichier de paroles","Songtext-Datei importieren","Importa un file di testo","Importar arquivo de letra","Söz dosyası içe aktar","Импортировать файл текста","歌詞ファイルを読み込む"],
+srch_again:["Search again","Αναζήτηση ξανά","Buscar de nuevo","Rechercher à nouveau","Erneut suchen","Cerca di nuovo","Buscar novamente","Tekrar ara","Искать снова","もう一度検索"],
+ly_right:["Search for the right song.","Βρες το σωστό τραγούδι.","Busca la canción correcta.","Cherche le bon titre.","Suche den richtigen Song.","Cerca il brano giusto.","Procure a música certa.","Doğru şarkıyı ara.","Найди нужную песню.","正しい曲を検索してください。"],
+synced:["Synced","Συγχρονισμένο","Sincronizada","Synchronisé","Synchron","Sincronizzato","Sincronizada","Senkronize","Синхронно","同期"],
+plain:["Plain","Απλό","Texto","Texte","Text","Testo","Texto","Düz","Текст","テキスト"],
+step_of:["Step {a} of 3","Βήμα {a} από 3","Paso {a} de 3","Étape {a} sur 3","Schritt {a} von 3","Passo {a} di 3","Etapa {a} de 3","Adım {a} / 3","Шаг {a} из 3","ステップ {a}/3"],
+g1:["<b>Uninstall the app.</b> If you want to keep your songs, back them up first.","<b>Απεγκατάστησε την εφαρμογή.</b> Αν θέλεις να κρατήσεις τα τραγούδια σου, κάνε πρώτα αντίγραφο ασφαλείας.","<b>Desinstala la app.</b> Si quieres conservar tus canciones, haz una copia de seguridad antes.","<b>Désinstalle l'app.</b> Si tu veux garder tes titres, sauvegarde-les d'abord.","<b>Deinstalliere die App.</b> Wenn du deine Songs behalten willst, sichere sie vorher.","<b>Disinstalla l'app.</b> Se vuoi conservare i tuoi brani, fai prima un backup.","<b>Desinstale o app.</b> Se quiser manter suas músicas, faça backup antes.","<b>Uygulamayı sil.</b> Şarkılarını saklamak istiyorsan önce yedekle.","<b>Удали приложение.</b> Если хочешь сохранить песни, сначала сделай резервную копию.","<b>アプリを削除します。</b>曲を残したい場合は、先にバックアップしてください。"],
+g1n:["Uninstalling also erases playlists and accounts saved inside Hum.","Η απεγκατάσταση σβήνει και τις λίστες και τους λογαριασμούς που είναι αποθηκευμένοι στο Hum.","Al desinstalar también se borran las listas y cuentas guardadas en Hum.","La désinstallation efface aussi les playlists et comptes enregistrés dans Hum.","Beim Deinstallieren werden auch Playlists und Konten in Hum gelöscht.","La disinstallazione cancella anche playlist e account salvati in Hum.","Desinstalar também apaga as playlists e contas salvas no Hum.","Silmek, Hum içindeki listeleri ve hesapları da siler.","Удаление также сотрёт плейлисты и аккаунты, сохранённые в Hum.","削除すると、Hum内のプレイリストやアカウントも消えます。"],
+g2:["Go to {link} and redownload Hum.","Πήγαινε στο {link} και κατέβασε ξανά το Hum.","Ve a {link} y descarga Hum de nuevo.","Va sur {link} et retélécharge Hum.","Öffne {link} und lade Hum erneut herunter.","Vai su {link} e scarica di nuovo Hum.","Acesse {link} e baixe o Hum novamente.","{link} adresine git ve Hum'u yeniden indir.","Перейди на {link} и скачай Hum заново.","{link} を開いてHumを再ダウンロードします。"],
+g3:["<b>Reimport your songs!</b>","<b>Εισήγαγε ξανά τα τραγούδια σου!</b>","<b>¡Vuelve a importar tus canciones!</b>","<b>Réimporte tes titres !</b>","<b>Importiere deine Songs erneut!</b>","<b>Reimporta i tuoi brani!</b>","<b>Importe suas músicas novamente!</b>","<b>Şarkılarını yeniden içe aktar!</b>","<b>Импортируй песни заново!</b>","<b>曲をもう一度読み込みましょう！</b>"],
+g3n:["Tap Add songs and pick them from Files.","Πάτα «Προσθήκη τραγουδιών» και διάλεξέ τα από τα Αρχεία.","Toca «Añadir canciones» y elígelas en Archivos.","Touche « Ajouter des titres » et choisis-les dans Fichiers.","Tippe auf „Songs hinzufügen“ und wähle sie in Dateien aus.","Tocca «Aggiungi brani» e scegli i file da File.","Toque em «Adicionar músicas» e escolha-as em Arquivos.","«Şarkı ekle»ye dokun ve Dosyalar'dan seç.","Нажми «Добавить песни» и выбери их в «Файлах».","「曲を追加」をタップして「ファイル」から選びます。"],
+back:["Back","Πίσω","Atrás","Retour","Zurück","Indietro","Voltar","Geri","Назад","戻る"],
+next:["Next","Επόμενο","Siguiente","Suivant","Weiter","Avanti","Próximo","İleri","Далее","次へ"],
+done:["Done","Τέλος","Listo","Terminé","Fertig","Fatto","Concluído","Bitti","Готово","完了"],
+sh_app:["Share App","Κοινοποίηση εφαρμογής","Compartir app","Partager l'app","App teilen","Condividi app","Compartilhar app","Uygulamayı paylaş","Поделиться приложением","Appを共有"],
+edit_home:["Edit Home Screen","Επεξεργασία Αρχικής οθόνης","Editar pantalla de inicio","Modifier l'écran d'accueil","Home-Bildschirm bearbeiten","Modifica schermata Home","Editar tela de início","Ana Ekranı Düzenle","Изменить экран «Домой»","ホーム画面を編集"],
+rm_app:["Remove App","Αφαίρεση εφαρμογής","Eliminar app","Supprimer l'app","App entfernen","Rimuovi app","Remover app","Uygulamayı sil","Удалить приложение","Appを削除"],
+open_hum:["Open Hum","Άνοιγμα Hum","Abrir Hum","Ouvrir Hum","Hum öffnen","Apri Hum","Abrir o Hum","Hum'u aç","Открыть Hum","Humを開く"],
+tip:["Tap the Share button in Safari, then choose Add to Home Screen.","Πάτα το κουμπί Κοινοποίηση στο Safari και μετά «Προσθήκη στην οθόνη Αφετηρίας».","Toca el botón Compartir en Safari y elige «Añadir a pantalla de inicio».","Touche le bouton Partager dans Safari, puis « Sur l'écran d'accueil ».","Tippe in Safari auf Teilen und wähle „Zum Home-Bildschirm“.","Tocca il pulsante Condividi in Safari, poi «Aggiungi alla schermata Home».","Toque em Compartilhar no Safari e escolha «Adicionar à Tela de Início».","Safari'de Paylaş düğmesine dokun, sonra «Ana Ekrana Ekle»yi seç.","Нажми «Поделиться» в Safari и выбери «На экран „Домой“».","Safariの共有ボタンをタップし、「ホーム画面に追加」を選びます。"]
+};
+let lang=store.get('hum-lang',null);
+if(!LANGS.some(l=>l[0]===lang)){const n=(navigator.language||'en').slice(0,2).toLowerCase();lang=LANGS.some(l=>l[0]===n)?n:'en'}
+function T(k,v){
+  const r=D[k];let s=r?(r[LANGS.findIndex(l=>l[0]===lang)]||r[0]):k;
+  if(v)for(const x in v)s=s.split('{'+x+'}').join(v[x]);
+  return s;
+}
+function tp(k,n){
+  const f=T(k).split('|');let i=0;
+  if(f.length>1){const c=new Intl.PluralRules(lang).select(n);i=f.length===3?(c==='one'?0:c==='few'?1:2):(c==='one'?0:1)}
+  return f[i].split('{n}').join(n);
+}
+const LINK='<a href="https://github.com/realsussy/Hum---offline-music-player" target="_blank" rel="noopener">github.com/realsussy/Hum---offline-music-player</a>';
+const REV={};
+function setOwn(el,txt){const n=[...el.childNodes].find(x=>x.nodeType===3&&x.nodeValue.trim());if(n)n.nodeValue=txt;else el.insertBefore(document.createTextNode(txt),el.firstChild)}
+function idle(){
+  $('#np').textContent=T('nothing_playing');$('#sub').textContent=T('pick_start');
+  $('#mtitle').textContent=$('#fptitle').textContent=T('nothing_playing');
+  $('#msub').textContent=T('pick_song');$('#fpartist').textContent='';$('#fnow').textContent='';
+}
+function fillLang(){
+  document.querySelectorAll('.langsel').forEach(sel=>{
+    sel.innerHTML=LANGS.map(([c,n])=>`<option value="${c}">${n}</option>`).join('');
+    sel.value=lang;sel.onchange=()=>setLang(sel.value);
+  });
+}
+function applyI18n(){
+  if(!applyI18n.done){
+    applyI18n.done=true;
+    for(const k in D)REV[D[k][0].replace(/\s+/g,' ')]=k;
+    const SKIP=new Set(['np','sub','mtitle','msub','fptitle','fpartist','fnow','who','snd','list','title','ago','lytitle','lyartist','lybody']);
+    document.querySelectorAll('body *').forEach(el=>{
+      if(el.closest('script,style')||SKIP.has(el.id))return;
+      if(el.placeholder&&REV[el.placeholder]&&!el.dataset.ip)el.dataset.ip=REV[el.placeholder];
+      if(!el.dataset.i&&!el.dataset.ih){
+        const own=[...el.childNodes].filter(x=>x.nodeType===3).map(x=>x.nodeValue).join('').replace(/\s+/g,' ').trim();
+        if(own&&REV[own])el.dataset.i=REV[own];
+      }
+    });
+  }
+  document.querySelectorAll('[data-i]').forEach(el=>setOwn(el,T(el.dataset.i,el.dataset.va?{a:el.dataset.va}:null)));
+  document.querySelectorAll('[data-ip]').forEach(el=>{el.placeholder=T(el.dataset.ip)});
+  document.querySelectorAll('[data-ih]').forEach(el=>{el.innerHTML=T(el.dataset.ih).split('{link}').join(LINK)});
+  document.documentElement.lang=lang;
+  fillLang();
+  if(!cur)idle();
+  if(authed)$('#who').textContent=whoName?T('signed',{n:whoName}):T('guest_sess');
+  sndLabel();setMode(mode);gStep(gs);
+}
+function setLang(l){
+  lang=l;store.set('hum-lang',l);applyI18n();
+  if(authed){
+    render();
+    if(cur){const tr=tracks.find(x=>x.id===cur);if(tr){show(tr,meta[cur]||{});$('#sub').textContent=T('now_playing')}}
+    if(B.classList.contains('ly')&&lyCur)lyLoad(lyCur,meta[lyCur.id]||{});
+  }
+}
+
+let likes=[],recent=[],libF='all',libNew=false,backTo='lib',userName='Guest',whoName=null;
 let U='';const K=n=>'hum-'+n+(U?'-'+U:'');
 const AUDIO=/\.(mp3|mp4|m4a|m4b|wav|aif|aiff|caf|ogg|flac|aac|opus|webm)$/i;
 const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
@@ -512,7 +689,7 @@ function addNative(list){
 }
 
 /* views */
-const SYS={all:'All songs',liked:'Liked songs',recent:'Recently played'};
+const SYS={get all(){return T('all')},get liked(){return T('liked')},get recent(){return T('recent')}};
 const listOf=v=>((v==='all'||v==='search')?tracks.map(t=>t.id):v==='liked'?likes:v==='recent'?recent:(pls.find(p=>p.id===v)||{ids:[]}).ids).map(i=>tracks.find(t=>t.id===i)).filter(Boolean);
 function visible(){
   const l=listOf(view),s=q.trim().toLowerCase();
@@ -534,12 +711,12 @@ function libArt(v){
   return`<span class="lart" style="background:linear-gradient(135deg,hsl(${h} 80% 62%),hsl(${(h+60)%360} 75% 55%))">♪</span>`;
 }
 function renderLib(){
-  $('#title').textContent='Your Library';
-  const items=[{v:'liked',n:'Liked songs'},{v:'recent',n:'Recently played'},{v:'all',n:'All songs'},...pls.map(p=>({v:p.id,n:p.name}))]
+  $('#title').textContent=T('lib');
+  const items=[{v:'liked',n:T('liked')},{v:'recent',n:T('recent')},{v:'all',n:T('all')},...pls.map(p=>({v:p.id,n:p.name}))]
     .filter(x=>libF==='all'||x.v==='liked'||pls.some(p=>p.id===x.v));
-  $('#list').innerHTML=`<div class="chips"><button class="chp${libF==='all'?' on':''}" data-f="all">All</button><button class="chp${libF==='pl'?' on':''}" data-f="pl">Playlists</button></div>`+
-    (libNew?'<div class="lnew"><input id="npl" placeholder="Playlist name" maxlength="40"><button class="apri" id="nplgo">Create</button></div>':'')+
-    items.map(x=>{const n=listOf(x.v).length;return`<button class="lrow" data-v="${x.v}">${libArt(x.v)}<span class="lt"><b>${esc(x.n)}</b><small>Playlist · ${n} ${n===1?'song':'songs'}</small></span></button>`}).join('');
+  $('#list').innerHTML=`<div class="chips"><button class="chp${libF==='all'?' on':''}" data-f="all">${T('chip_all')}</button><button class="chp${libF==='pl'?' on':''}" data-f="pl">${T('playlists')}</button></div>`+
+    (libNew?'<div class="lnew"><input id="npl" placeholder="'+T('ph_plname')+'" maxlength="40"><button class="apri" id="nplgo">'+T('create')+'</button></div>':'')+
+    items.map(x=>{const n=listOf(x.v).length;return`<button class="lrow" data-v="${x.v}">${libArt(x.v)}<span class="lt"><b>${esc(x.n)}</b><small>${tp('pl_sub',n)}</small></span></button>`}).join('');
   if(libNew){
     const mk=()=>{const name=$('#npl').value.trim();if(!name)return;const p={id:'p'+Date.now(),name,ids:[]};pls.push(p);store.set(K('pl'),pls);libNew=false;view=p.id;backTo='lib';render()};
     $('#npl').focus();$('#npl').onkeydown=e=>{if(e.key==='Enter')mk()};$('#nplgo').onclick=mk;
@@ -548,14 +725,14 @@ function renderLib(){
 const rowsHtml=l=>l.map((t,i)=>`<div class="row${t.id===cur?' on':''}" data-id="${esc(t.id)}"><span class="n">${i+1}</span><span class="t">${esc(t.name)}</span><span class="d">${durs[t.id]?fmt(durs[t.id]):''}</span><button class="add" aria-label="More options for ${esc(t.name)}">+</button></div>`).join('');
 const ROOT=['home','search','lib'],TABOF={home:0,search:1,lib:2};
 const thue=x=>x.v==='liked'?330:x.v==='recent'?215:x.v==='all'?270:hue(x.n);
-const sysItems=()=>[{v:'liked',n:'Liked songs'},{v:'recent',n:'Recently played'},{v:'all',n:'All songs'},...pls.map(p=>({v:p.id,n:p.name}))];
+const sysItems=()=>[{v:'liked',n:T('liked')},{v:'recent',n:T('recent')},{v:'all',n:T('all')},...pls.map(p=>({v:p.id,n:p.name}))];
 function seedShuffle(a){
   const d=new Date();let x=d.getDate()*7919+d.getMonth()*104729+1;
   const r=()=>(x=(x*1664525+1013904223)>>>0)/4294967296,b=[...a];
   for(let i=b.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[b[i],b[j]]=[b[j],b[i]]}
   return b;
 }
-function trackCard(t,sm){return`<button class="card${sm?' sm':''}" data-id="${esc(t.id)}"><span class="cart" style="--ch:${hue(t.name)}"></span><small>Song</small><b>${esc(t.name)}</b><span class="ca">Local file</span></button>`}
+function trackCard(t,sm){return`<button class="card${sm?' sm':''}" data-id="${esc(t.id)}"><span class="cart" style="--ch:${hue(t.name)}"></span><small>${T('song')}</small><b>${esc(t.name)}</b><span class="ca">${T('local')}</span></button>`}
 function hydrate(ids){
   ids.forEach(id=>{
     const t=tracks.find(x=>x.id===id);if(!t||!t.blob)return;
@@ -569,9 +746,9 @@ function hydrate(ids){
   });
 }
 function renderHome(){
-  $('#title').textContent='Home';
+  $('#title').textContent=T('home');
   if(!tracks.length){
-    $('#list').innerHTML='<div class="empty"><b>Welcome to Hum</b>Add some music to get started.<br><button class="apri" id="emptyadd">Add songs</button></div>';return;
+    $('#list').innerHTML=`<div class="empty"><b>${T('welcome')}</b>${T('welcome_sub')}<br><button class="apri" id="emptyadd">${T('add_songs')}</button></div>`;return;
   }
   const items=sysItems().slice(0,8);
   const rec=new Set(recent.slice(0,5));
@@ -580,20 +757,20 @@ function renderHome(){
   if(!sug.length)sug.push(...seedShuffle(tracks));
   const s8=sug.slice(0,8),rl=listOf('recent').slice(0,10);
   $('#list').innerHTML='<div class="tiles">'+items.map(x=>`<button class="tile" data-v="${x.v}" style="--th:${thue(x)}">${libArt(x.v)}<b>${esc(x.n)}</b></button>`).join('')+'</div>'+
-    `<div class="sh"><h2>Suggested for today</h2></div><div class="hrow">${s8.map(t=>trackCard(t)).join('')}</div>`+
-    (rl.length?`<div class="sh"><h2>Recents</h2><button class="shall" id="shall">Show all</button></div><div class="hrow">${rl.map(t=>trackCard(t,true)).join('')}</div>`:'');
+    `<div class="sh"><h2>${T('suggested')}</h2></div><div class="hrow">${s8.map(t=>trackCard(t)).join('')}</div>`+
+    (rl.length?`<div class="sh"><h2>${T('recents')}</h2><button class="shall" id="shall">${T('show_all')}</button></div><div class="hrow">${rl.map(t=>trackCard(t,true)).join('')}</div>`:'');
   hydrate([...s8,...rl].map(t=>t.id));
 }
 function renderSearch(){
-  $('#title').textContent='Search';
+  $('#title').textContent=T('search');
   const s=q.trim().toLowerCase();
   if(!s){
-    $('#list').innerHTML='<div class="sec2">Browse your library</div><div class="bgrid">'+sysItems().map(x=>`<button class="bcard" data-v="${x.v}" style="--th:${thue(x)}"><b>${esc(x.n)}</b>${libArt(x.v)}</button>`).join('')+'</div>';
+    $('#list').innerHTML='<div class="sec2">'+T('browse')+'</div><div class="bgrid">'+sysItems().map(x=>`<button class="bcard" data-v="${x.v}" style="--th:${thue(x)}"><b>${esc(x.n)}</b>${libArt(x.v)}</button>`).join('')+'</div>';
     return;
   }
   const l=visible(),pm=pls.filter(p=>p.name.toLowerCase().includes(s));
-  if(!l.length&&!pm.length){$('#list').innerHTML='<div class="empty"><b>No results</b>Try a different word.</div>';return}
-  $('#list').innerHTML=(pm.length?'<div class="sec2">Playlists</div>'+pm.map(p=>{const n=listOf(p.id).length;return`<button class="lrow" data-v="${p.id}">${libArt(p.id)}<span class="lt"><b>${esc(p.name)}</b><small>Playlist · ${n} ${n===1?'song':'songs'}</small></span></button>`}).join(''):'')+(l.length?'<div class="sec2">Songs</div>'+rowsHtml(l):'');
+  if(!l.length&&!pm.length){$('#list').innerHTML='<div class="empty"><b>'+T('no_results')+'</b>'+T('try_other')+'</div>';return}
+  $('#list').innerHTML=(pm.length?'<div class="sec2">'+T('playlists')+'</div>'+pm.map(p=>{const n=listOf(p.id).length;return`<button class="lrow" data-v="${p.id}">${libArt(p.id)}<span class="lt"><b>${esc(p.name)}</b><small>${tp('pl_sub',n)}</small></span></button>`}).join(''):'')+(l.length?'<div class="sec2">'+T('songs_h')+'</div>'+rowsHtml(l):'');
 }
 function render(){
   renderNav();
@@ -606,16 +783,16 @@ function render(){
   if(view==='search')return renderSearch();
   if(view==='lib')return renderLib();
   libNew=false;
-  $('#title').textContent=SYS[view]||(pl&&pl.name)||'All songs';
+  $('#title').textContent=SYS[view]||(pl&&pl.name)||T('all');
   const l=visible();
   if(!l.length){
     let h,m='';
-    if(q){h='No songs match your search';m='Try a different word.'}
-    else if(view==='liked'){h='No liked songs yet';m='Tap the heart in the player to like a song.'}
-    else if(view==='recent'){h='Nothing played yet';m='Songs you play show up here.'}
-    else if(pl){h='This playlist is empty';m='Use the + button on a song to add it here.'}
-    else{h='Your library is empty';m='Drop music files here, or add them below.'}
-    $('#list').innerHTML=`<div class="empty"><b>${h}</b>${m}${view==='all'&&!q?'<br><button class="apri" id="emptyadd">Add songs</button>':''}</div>`;
+    if(q){h=T('no_match');m=T('try_other')}
+    else if(view==='liked'){h=T('no_liked');m=T('no_liked_sub')}
+    else if(view==='recent'){h=T('nothing_played');m=T('nothing_played_sub')}
+    else if(pl){h=T('pl_empty');m=T('pl_empty_sub')}
+    else{h=T('lib_empty');m=T('lib_empty_sub')}
+    $('#list').innerHTML=`<div class="empty"><b>${h}</b>${m}${view==='all'&&!q?'<br><button class="apri" id="emptyadd">'+T('add_songs')+'</button>':''}</div>`;
     return;
   }
   $('#list').innerHTML=rowsHtml(l);
@@ -632,15 +809,15 @@ function toggleLike(id){
 function updLike(){$('#fplike').classList.toggle('on',cur!=null&&likes.includes(cur))}
 $('#fplike').onclick=()=>{if(cur)toggleLike(cur)};
 $('#back').onclick=()=>{view=backTo||'lib';libNew=false;render();setTab(TABOF[view]??2);$('main').scrollTop=0};
-$('#libadd').onclick=e=>showMenu(e,'<button data-a="np">New playlist</button><button data-a="af">Add songs</button>'+(isIOS?'':'<button data-a="ad">Add folder</button>'),a=>{
+$('#libadd').onclick=e=>showMenu(e,'<button data-a="np">'+T('new_pl')+'</button><button data-a="af">'+T('add_songs')+'</button>'+(isIOS?'':'<button data-a="ad">'+T('add_folder')+'</button>'),a=>{
   if(a==='np'){libNew=true;render()}
   if(a==='af')$('#fi').click();
   if(a==='ad')$('#fd').click();
 });
 $('#plmore').onclick=e=>{
   const p=pls.find(x=>x.id===view);if(!p)return;
-  showMenu(e,'<button data-a="del">Delete playlist</button>',a=>{
-    if(a==='del')showMenu(e,`<button data-a="yes">Yes, delete “${esc(p.name)}”</button><button data-a="no">Cancel</button>`,b=>{
+  showMenu(e,'<button data-a="del">'+T('del_pl')+'</button>',a=>{
+    if(a==='del')showMenu(e,`<button data-a="yes">${T('del_yes',{n:esc(p.name)})}</button><button data-a="no">${T('cancel')}</button>`,b=>{
       if(b==='yes'){pls=pls.filter(x=>x.id!==p.id);store.set(K('pl'),pls);view='lib';render()}
     });
   });
@@ -653,7 +830,7 @@ function play(id,list){
   if(blobUrl){URL.revokeObjectURL(blobUrl);blobUrl=null}
   au.src=t.url||(blobUrl=URL.createObjectURL(t.blob));
   au.play().catch(()=>{});
-  $('#np').textContent=t.name;$('#sub').textContent='Now playing';$('#fnow').textContent=t.name;show(t,meta[t.id]||{});loadMeta(t).then(m=>{if(cur===t.id){show(t,m);if(B.classList.contains('ly'))lyLoad(t,m)}});
+  $('#np').textContent=t.name;$('#sub').textContent=T('now_playing');$('#fnow').textContent=t.name;show(t,meta[t.id]||{});loadMeta(t).then(m=>{if(cur===t.id){show(t,m);if(B.classList.contains('ly'))lyLoad(t,m)}});
   const h=hue(t.name);document.documentElement.style.setProperty('--h',h);$('#label').style.background=`linear-gradient(135deg,hsl(${h} 85% 68%),hsl(${(h+60)%360} 80% 60%))`;
   if(view!=='home')render();
 }
@@ -697,9 +874,9 @@ $('#newpl').onkeydown=e=>{
 };
 function openMenu(e,id){
   const m=$('#menu'),inPl=pls.some(p=>p.id===view);
-  m.innerHTML='<button data-a="like">'+(likes.includes(id)?'Unlike song':'Like song')+'</button><hr>'+
-    (pls.length?pls.map(p=>`<button data-a="add" data-p="${p.id}">Add to ${esc(p.name)}</button>`).join(''):'<button disabled>Make a playlist first</button>')+'<hr>'+
-    (inPl?'<button data-a="rmpl">Remove from this playlist</button>':'<button data-a="rm">Remove from library</button>');
+  m.innerHTML='<button data-a="like">'+(likes.includes(id)?T('unlike'):T('like'))+'</button><hr>'+
+    (pls.length?pls.map(p=>`<button data-a="add" data-p="${p.id}">${T('add_to',{n:esc(p.name)})}</button>`).join(''):'<button disabled>'+T('make_pl')+'</button>')+'<hr>'+
+    (inPl?'<button data-a="rmpl">'+T('rm_pl')+'</button>':'<button data-a="rm">'+T('rm_lib')+'</button>');
   m.hidden=false;m.style.left=Math.min(e.clientX,innerWidth-200)+'px';m.style.top=Math.min(e.clientY,innerHeight-300)+'px';
   m.onclick=ev=>{
     const b=ev.target.closest('button[data-a]');if(!b)return;const a=b.dataset.a;
@@ -729,7 +906,7 @@ function sfx(k){
     if(navigator.vibrate)navigator.vibrate(k==='tap'?6:10);
   }catch(e){}
 }
-const sndLabel=()=>$('#snd').textContent='Click sounds: '+(mute?'off':'on');
+const sndLabel=()=>$('#snd').textContent=T('sounds')+': '+T(mute?'off':'on');
 sndLabel();
 $('#snd').onclick=()=>{mute=!mute;store.set('hum-snd',!mute);sndLabel();sfx('on')};
 document.addEventListener('click',e=>{
@@ -788,7 +965,7 @@ function marq(el,txt){
     if(o>0&&!matchMedia('(prefers-reduced-motion:reduce)').matches){el.style.setProperty('--d',-o+'px');el.style.animation='mq 9s ease-in-out infinite alternate'}});
 }
 function show(t,m){
-  const ar=m.artist||(pls.find(p=>p.id===view)?.name||'All songs');
+  const ar=m.artist||(pls.find(p=>p.id===view)?.name||T('all'));
   $('#mtitle').textContent=$('#fptitle').textContent=m.title||t.name;
   $('#msub').textContent=$('#fpartist').textContent=ar;
   marq($('#fpalbum'),m.album||m.title||t.name);
@@ -948,7 +1125,7 @@ async function lyFind(g,dur){
 function lyMsg(t){lyLines=null;$('#lybody').className='';$('#lybody').innerHTML='<div class="lymsg">'+esc(t)+'</div>'}
 function lyShow(d){
   const b=$('#lybody');lyIdx=-1;lyLines=null;b.className='';b.scrollTop=0;
-  if(d.inst&&!d.synced&&!d.plain)return lyMsg('♪ Instrumental');
+  if(d.inst&&!d.synced&&!d.plain)return lyMsg(T('ly_inst'));
   if(d.synced){
     lyLines=lrcParse(d.synced);b.className='sy';
     b.innerHTML=lyLines.map((l,i)=>`<div class="ll" data-i="${i}">${esc(l.tx)||'♪'}</div>`).join('');lyTick(true);
@@ -968,28 +1145,28 @@ function lyChoose(t,j){
 }
 function lyList(list){
   lyL=list;
-  $('#lyres').innerHTML=list.length?list.slice(0,8).map((j,i)=>`<button class="lyr" data-i="${i}"><b>${esc(j.trackName||'')}</b><span>${esc(j.artistName||'')} · ${fmt(j.duration)} · ${j.syncedLyrics?'Synced':'Plain'}</span></button>`).join(''):'<div class="lymsg">No matches yet.</div>';
+  $('#lyres').innerHTML=list.length?list.slice(0,8).map((j,i)=>`<button class="lyr" data-i="${i}"><b>${esc(j.trackName||'')}</b><span>${esc(j.artistName||'')} · ${fmt(j.duration)} · ${T(j.syncedLyrics?'synced':'plain')}</span></button>`).join(''):'<div class="lymsg">'+T('no_matches')+'</div>';
 }
 function lyPicker(g,list,msg){
   lyLines=null;$('#lybody').className='';
-  $('#lybody').innerHTML=`<div class="lymsg">${esc(msg)}</div><div class="lyform"><input id="lyq1" placeholder="Song title" value="${esc(g.title)}"><input id="lyq2" placeholder="Artist" value="${esc(g.artist)}"><button class="apri" id="lygo">Search</button></div><div id="lyres"></div>`;
+  $('#lybody').innerHTML=`<div class="lymsg">${esc(msg)}</div><div class="lyform"><input id="lyq1" placeholder="${T('ph_title')}" value="${esc(g.title)}"><input id="lyq2" placeholder="${T('ph_artist')}" value="${esc(g.artist)}"><button class="apri" id="lygo">${T('search')}</button></div><div id="lyres"></div>`;
   if(list.length)lyList(list);
   $('#lygo').onclick=async()=>{
     const g2={title:$('#lyq1').value.trim(),artist:$('#lyq2').value.trim(),album:''};if(!g2.title)return;
-    $('#lyres').innerHTML='<div class="lymsg">Searching…</div>';
-    try{lyList(await lyFind(g2,0))}catch(e){$('#lyres').innerHTML='<div class="lymsg">Could not reach the lyrics service.</div>'}
+    $('#lyres').innerHTML='<div class="lymsg">'+T('searching')+'</div>';
+    try{lyList(await lyFind(g2,0))}catch(e){$('#lyres').innerHTML='<div class="lymsg">'+T('ly_net2')+'</div>'}
   };
 }
 async function lyLoad(t,m,force){
   if(!t)return;lyCur=t;const g=guess(t,m||{}),id=++lyReq;
-  $('#lytitle').textContent=g.title;$('#lyartist').textContent=g.artist||'Unknown artist';
+  $('#lytitle').textContent=g.title;$('#lyartist').textContent=g.artist||T('ly_unknown');
   const saved=lyStore()[t.id];if(saved&&!force)return lyShow(saved);
-  lyMsg('Finding lyrics…');
+  lyMsg(T('ly_find'));
   try{
     const r=await lyFind(g,au.duration);if(id!==lyReq)return;
-    if(!r.length)return lyPicker(g,[],'No lyrics found for this song. Try another spelling.');
+    if(!r.length)return lyPicker(g,[],T('ly_none'));
     lyChoose(t,r[0]);
-  }catch(e){if(id===lyReq)lyMsg('Could not reach the lyrics service. Check your internet and try again.')}
+  }catch(e){if(id===lyReq)lyMsg(T('ly_net'))}
 }
 function dl(name,text,ext){
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain'}));
@@ -1002,14 +1179,14 @@ $('#lybody').onclick=e=>{
 $('#lybtn').onclick=$('#fpl').onclick=()=>{
   B.classList.add('ly');
   if(cur)lyLoad(tracks.find(x=>x.id===cur),meta[cur]||{});
-  else{lyCur=null;$('#lytitle').textContent='Lyrinc';$('#lyartist').textContent='';lyMsg('Play a song, then open Lyrinc.')}
+  else{lyCur=null;$('#lytitle').textContent='Lyrinc';$('#lyartist').textContent='';lyMsg(T('ly_first'))}
 };
 $('#lyclose').onclick=()=>B.classList.remove('ly');
 $('#lypv').onclick=()=>$('#pv').click();$('#lynx').onclick=()=>$('#nx').click();$('#lypp').onclick=toggle;
 $('#lyact').onclick=e=>{
   if(!lyCur)return;
   const d=lyStore()[lyCur.id],m=$('#menu');
-  m.innerHTML=(d&&d.synced?'<button data-a="lrc">Download .lrc (synced)</button>':'')+(d&&(d.plain||d.synced)?'<button data-a="txt">Download .txt (plain)</button>':'')+'<button data-a="imp">Import a lyrics file</button><button data-a="srch">Search again</button>';
+  m.innerHTML=(d&&d.synced?'<button data-a="lrc">'+T('dl_lrc')+'</button>':'')+(d&&(d.plain||d.synced)?'<button data-a="txt">'+T('dl_txt')+'</button>':'')+'<button data-a="imp">'+T('imp')+'</button><button data-a="srch">'+T('srch_again')+'</button>';
   m.hidden=false;m.style.left=Math.max(8,Math.min(e.clientX-160,innerWidth-208))+'px';m.style.top=(e.clientY+16)+'px';
   m.onclick=ev=>{
     const a=ev.target.closest('button');if(!a)return;m.hidden=true;
@@ -1017,7 +1194,7 @@ $('#lyact').onclick=e=>{
     if(a.dataset.a==='lrc')dl(nm,d.synced,'.lrc');
     if(a.dataset.a==='txt')dl(nm,d.plain||d.synced.replace(/\[[^\]]*\]/g,'').replace(/^ +/gm,''),'.txt');
     if(a.dataset.a==='imp')$('#lyf').click();
-    if(a.dataset.a==='srch')lyPicker(g,[],'Search for the right song.');
+    if(a.dataset.a==='srch')lyPicker(g,[],T('ly_right'));
   };
 };
 $('#lyf').onchange=async e=>{
@@ -1040,7 +1217,7 @@ function gStep(n){
   gs=Math.max(1,Math.min(3,n));
   document.querySelectorAll('.sc,.gt').forEach(e=>e.classList.toggle('on',Number(e.dataset.s)===gs));
   document.querySelectorAll('.gdots i').forEach((d,i)=>d.classList.toggle('on',i===gs-1));
-  $('#gback').hidden=gs===1;$('#gnext').textContent=gs===3?'Done':'Next';
+  $('#gback').hidden=gs===1;$('#gnext').textContent=T(gs===3?'done':'next');
 }
 if(window.native)$('#howup').hidden=true;
 $('#howup').onclick=()=>{B.classList.remove('sheet');gStep(1);$('#guide').classList.add('on')};
@@ -1088,7 +1265,7 @@ function initGoogle(){
         const p=jwt(r.credential),users=store.get('hum-users',{}),key='g:'+p.sub;
         users[key]={id:'g'+String(p.sub).slice(-10),name:p.name||p.email||'Google user',google:true};
         store.set('hum-users',users);login(key);
-      }catch(e){$('#aerr').textContent='Google sign-in failed. Try again.'}
+      }catch(e){$('#aerr').textContent=T('e_google')}
     }});
     google.accounts.id.renderButton($('#gbtn'),{theme:'filled_black',size:'large',shape:'pill',text:'continue_with',width:300});
     $('#gwrap').hidden=false;
@@ -1107,51 +1284,50 @@ async function pbk(pw,salt){
 function setMode(m){
   mode=m;document.querySelectorAll('.aseg button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
   $('#aname').hidden=m!=='up';$('#apass').autocomplete=m==='up'?'new-password':'current-password';
-  $('#ago').textContent=m==='up'?'Create account':'Log in';$('#aerr').textContent='';
+  $('#ago').textContent=T(m==='up'?'create_acc':'log_in');$('#aerr').textContent='';
 }
 document.querySelectorAll('.aseg button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
 $('#aform').onsubmit=async e=>{
   e.preventDefault();
   const err=m=>{$('#aerr').textContent=m},u=$('#auser').value.trim().toLowerCase(),pw=$('#apass').value,users=store.get('hum-users',{});
-  if(!(window.crypto&&crypto.subtle))return err('Secure sign-in is not available here.');
+  if(!(window.crypto&&crypto.subtle))return err(T('e_secure'));
   try{
     if(mode==='up'){
       const name=$('#aname').value.trim();
-      if(name.length<2)return err('Enter your name.');
-      if(!/^[a-z0-9_.-]{3,20}$/.test(u))return err('Username: 3 to 20 letters, numbers, . _ or -');
-      if(pw.length<8)return err('Password needs at least 8 characters.');
-      if(users[u])return err('That username is taken.');
+      if(name.length<2)return err(T('e_name'));
+      if(!/^[a-z0-9_.-]{3,20}$/.test(u))return err(T('e_user'));
+      if(pw.length<8)return err(T('e_pass'));
+      if(users[u])return err(T('e_taken'));
       const salt=crypto.getRandomValues(new Uint8Array(16));
       users[u]={id:hex(crypto.getRandomValues(new Uint8Array(6))),name,salt:hex(salt),hash:await pbk(pw,salt)};
       store.set('hum-users',users);login(u);
     }else{
       const r=users[u];
-      if(!r||await pbk(pw,unhex(r.salt))!==r.hash)return err('Wrong username or password.');
+      if(!r||await pbk(pw,unhex(r.salt))!==r.hash)return err(T('e_wrong'));
       login(u);
     }
-  }catch(x){err('Something went wrong. Try again.')}
+  }catch(x){err(T('e_fail'))}
 };
 $('#aguest').onclick=()=>login('guest');
 function login(name){store.set('hum-session',name);$('#apass').value='';$('#aerr').textContent='';boot(name)}
 $('#logout').onclick=()=>{
   au.pause();au.removeAttribute('src');au.load();cur=null;queue=[];authed=false;
   B.classList.remove('np','sheet','playing','ly');store.set('hum-session',null);
-  $('#mtitle').textContent=$('#fptitle').textContent='Nothing playing';
-  $('#msub').textContent=$('#fpartist').textContent='Pick a song';$('#fnow').textContent='';
+  idle();
   for(const q of['#mart','#fpart'])$(q).style.background='';
   $('#auser').value='';setMode('in');$('#auth').classList.add('on');
 };
 async function boot(name){
   const r=name==='guest'?null:store.get('hum-users',{})[name];
   U=r?r.id:'';authed=true;
-  userName=r?r.name:'Guest';$('#who').textContent=r?'Signed in as '+r.name:'Guest session';
+  userName=r?r.name:'Guest';whoName=r?r.name:null;applyI18n();
   const av=$('#avatar');av.textContent=(userName.trim()[0]||'?').toUpperCase();av.style.background='hsl('+hue(userName)+' 62% 58%)';
   pls=store.get(K('pl'),[]);likes=store.get(K('likes'),[]);recent=store.get(K('recent'),[]);tracks=[];view='home';libNew=false;q='';$('#search').value='';
   openDb();try{tracks=(await tx('readonly',s=>s.getAll()))||[]}catch(e){tracks=[]}
   $('#auth').classList.remove('on');setTab(0);updLike();render();
   if(window.native){const f=store.get(K('folder'),null);if(f)native.scan(f).then(addNative)}
 }
-pwaInit();installInit();initGoogle();{const sn=store.get('hum-session',null);if(sn==='guest'||store.get('hum-users',{})[sn])boot(sn);else setMode('in')}
+applyI18n();pwaInit();installInit();initGoogle();{const sn=store.get('hum-session',null);if(sn==='guest'||store.get('hum-users',{})[sn])boot(sn);else setMode('in')}
 
 </script>
 </body>
